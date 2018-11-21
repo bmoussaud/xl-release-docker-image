@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xlrelease-deployment
+  labels:
+    app: xlrelease
+    release: 8.2.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xlrelease
+      release: 8.2.0
+  template:
+    metadata:
+      labels:
+        app: xlrelease
+        release: 8.2.0
+    spec:
+      containers:
+      - name: xlrelease
+        image: xebialabs/xl-release:8.2
+        imagePullPolicy: Always
+        ports:
+        - name: xlr-http
+          containerPort: 5516
+          protocol: TCP
+        volumeMounts:
+          - name: xlrelease-storage-repository
+            mountPath: /opt/xebialabs/xl-release-server/repository
+        livenessProbe:
+            httpGet:
+              path: /
+              port: xlr-http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 12
+        readinessProbe:
+            httpGet:
+              path: /
+              port: xlr-http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 12
+        envFrom:
+            - configMapRef:
+                name: xlrelease-config
+      volumes:
+        - name: xlrelease-storage-repository
+          persistentVolumeClaim:
+            claimName: xlr-pv-claim-repository
+

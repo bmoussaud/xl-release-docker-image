@@ -59,7 +59,7 @@ LABEL name="xebialabs/xl-release" \
       description="Automate, orchestrate and get visibility into your release pipelines — at enterprise scale" \
       url="https://www.xebialabs.com/xl-release"
 
-ENV USER_UID=10001 APP_ROOT=/opt/xebialabs
+ENV APP_ROOT=/opt/xebialabs
 ENV APP_HOME=${APP_ROOT}/xl-release-server
 
 ADD resources/amd64/tini ${APP_ROOT}/tini
@@ -71,7 +71,7 @@ COPY --from=installer ${APP_ROOT} ${APP_ROOT}
 WORKDIR ${APP_HOME}
 
 # Don't run as root
-USER 10001
+#USER 10001
 
 VOLUME ["${APP_HOME}/archive", "${APP_HOME}/conf", "${APP_HOME}/hotfix", "${APP_HOME}/ext", "${APP_HOME}/plugins", "${APP_HOME}/repository"]
 EXPOSE 5516

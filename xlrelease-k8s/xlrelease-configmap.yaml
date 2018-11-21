@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xlrelease-config
+  labels:
+    app: xlrelease
+data:
+  ADMIN_PASSWORD: admin
+
