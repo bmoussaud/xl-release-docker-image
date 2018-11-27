@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: xlrelease
-        image: bmoussaud/xl-release-with-db:8.2.0
+        image: bmoussaud/xl-release-with-db:8.2.1
         imagePullPolicy: Always
         ports:
         - name: xlr-http
