@@ -32,8 +32,18 @@ if [ -z "$(ls -A ${APP_HOME}/plugins)" ]; then
 fi
 
 # Set up new installation
-if [ ! -f "${APP_HOME}/conf/xl-release-server.conf" ]; then
+if [ ! -f "${APP_HOME}/ext/xlrelease-configuration/xl-release-server.conf" ]; then
   echo "No ${APP_HOME}/conf/xl-release-server.conf file detected:"
+
+  echo "... create and link ${APP_HOME}/repository/xlrelease-configuration"
+  mkdir -p ${APP_HOME}/repository/xlrelease-configuration
+  rm -rf ${APP_HOME}/conf
+  ln -s ${APP_HOME}/repository/xlrelease-configuration ${APP_HOME}/conf
+
+  echo "... create and link ${APP_HOME}/repository/xlrelease-archive"
+  rm -rf ${APP_HOME}/archive
+  ln -s ${APP_HOME}/repository/xlrelease-archive ${APP_HOME}/archive
+
   echo "... Copying default configuration from ${APP_HOME}/default-conf"
 
   cd ${APP_HOME}/default-conf
@@ -69,8 +79,17 @@ if [ ! -f "${APP_HOME}/conf/xl-release-server.conf" ]; then
 
     echo "Done"
   fi
-fi
+else
+  echo "existing ${APP_HOME}/conf/xl-release-server.conf file detected:"
+  echo "... only link ${APP_HOME}/repository/xlrelease-configuration"
 
+  rm -rf ${APP_HOME}/conf
+  ln -s ${APP_HOME}/repository/xlrelease-configuration ${APP_HOME}/conf
+
+  echo "... only link ${APP_HOME}/repository/xlrelease-archive"
+  rm -rf ${APP_HOME}/archive
+  ln -s ${APP_HOME}/repository/xlrelease-archive ${APP_HOME}/archive
+fi
 
 
 # Generate node specific configuration with IP address of container
