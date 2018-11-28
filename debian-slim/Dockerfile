@@ -40,7 +40,18 @@ RUN mv ${APP_HOME}/plugins ${APP_HOME}/default-plugins && \
     mkdir ${APP_HOME}/plugins
 
 # Create empty archive and repository directories
-RUN mkdir ${APP_HOME}/archive ${APP_HOME}/repository
+RUN mkdir -p ${APP_HOME}/storage
+RUN mkdir -p ${APP_HOME}/storage/archive ${APP_HOME}/storage/repository ${APP_HOME}/storage/ext ${APP_HOME}/storage/conf
+
+RUN ln -s ${APP_HOME}/storage/archive ${APP_HOME}/archive
+RUN ln -s ${APP_HOME}/storage/repository ${APP_HOME}/repository
+
+RUN cp -r ${APP_HOME}/ext/* ${APP_HOME}/storage/ext
+RUN rm -rf ${APP_HOME}/ext
+RUN ln -s ${APP_HOME}/storage/ext ${APP_HOME}/ext
+
+RUN rm -rf ${APP_HOME}/conf
+RUN ln -s ${APP_HOME}/storage/conf ${APP_HOME}/conf
 
 # Set permissions
 RUN chgrp -R 0 ${APP_ROOT} && \
@@ -73,7 +84,7 @@ WORKDIR ${APP_HOME}
 # Don't run as root
 #USER 10001
 
-VOLUME ["${APP_HOME}/hotfix", "${APP_HOME}/ext", "${APP_HOME}/plugins", "${APP_HOME}/repository"]
+VOLUME ["${APP_HOME}/hotfix", "${APP_HOME}/plugins"]
 EXPOSE 5516
 
 # Environment variables are not expanded when using the exec form of the ENTRYPOINT command. They are
