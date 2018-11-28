@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: xlrelease
-        image: bmoussaud/xl-release-with-db:8.2.3
+        image: bmoussaud/xl-release-with-db:8.2.4
         imagePullPolicy: Always
         command: [ "/bin/bash", "-c", "--" ]
         args: [ "while true; do sleep 30; done;" ]
