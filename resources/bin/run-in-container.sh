@@ -34,7 +34,10 @@ fi
 # Set up new installation
 if [ ! -f "${APP_HOME}/conf/xl-release-server.conf" ]; then
   echo "No ${APP_HOME}/conf/xl-release-server.conf file detected:"
+  echo "... Create directories in the storage."
+  mkdir -p ${APP_HOME}/storage/archive ${APP_HOME}/storage/repository ${APP_HOME}/storage/ext ${APP_HOME}/storage/conf
   echo "... Copying default configuration from ${APP_HOME}/default-conf"
+
 
   cd ${APP_HOME}/default-conf
   for f in *; do
