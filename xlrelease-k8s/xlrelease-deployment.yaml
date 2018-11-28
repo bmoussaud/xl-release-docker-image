@@ -21,6 +21,8 @@ spec:
       - name: xlrelease
         image: bmoussaud/xl-release-with-db:8.2.3
         imagePullPolicy: Always
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
         ports:
         - name: xlr-http
           containerPort: 5516

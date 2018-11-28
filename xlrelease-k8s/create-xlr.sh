@@ -9,7 +9,7 @@ kubectl describe  cm -n xebialabs xlrelease-config
 
 kubectl apply -n xebialabs -f xlrelease-storage.yaml
 kubectl get pvc -n xebialabs
-kubectl describe pvc xlr-pv-claim-repository -n xebialabs
+kubectl describe pvc xlr-pv-claim-storage -n xebialabs
 
 
 kubectl apply -n xebialabs -f xlrelease-deployment.yaml
