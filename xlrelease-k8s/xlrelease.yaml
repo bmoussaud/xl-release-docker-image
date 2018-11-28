@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xlrelease-config
+  labels:
+    app: xlrelease
+data:
+  ADMIN_PASSWORD: admin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xlrelease-deployment
+  labels:
+    app: xlrelease
+    release: 8.2.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xlrelease
+      release: 8.2.0
+  template:
+    metadata:
+      labels:
+        app: xlrelease
+        release: 8.2.0
+    spec:
+      containers:
+      - name: xlrelease
+        image: bmoussaud/xl-release-with-db:8.2.4
+        imagePullPolicy: Always
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        ports:
+        - name: xlr-http
+          containerPort: 5516
+          protocol: TCP
+        volumeMounts:
+          - name: xlrelease-storage-storage
+            mountPath: /opt/xebialabs/xl-release-server/storage
+        livenessProbe:
+            httpGet:
+              path: /
+              port: xlr-http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 12
+        readinessProbe:
+            httpGet:
+              path: /
+              port: xlr-http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 12
+        envFrom:
+            - configMapRef:
+                name: xlrelease-config
+      volumes:
+        - name: xlrelease-storage-storage
+          persistentVolumeClaim:
+            claimName: xlr-pv-claim-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xlr-service
+  labels:
+    app: xlrelease
+    release: 8.2.0
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5516
+      targetPort: xlr-http
+      protocol: TCP
+      name: xlr-http-svc
+  selector:
+    app: xlrelease
+    release: 8.2.0
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: xlr-pv-claim-storage
+  labels:
+    app: xldeploy
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
